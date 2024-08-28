@@ -1,0 +1,44 @@
+{% extends 'client_base.html' %}
+{% block main %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+    <h1>Order Details</h1>
+    
+    {% if order %}
+        <table border="1">
+            <tr>
+                <th>Order ID</th>
+                <td>{{ order.orderid }}</td>
+            </tr>
+            <tr>
+                <th>Trading Symbol</th>
+                <td>{{ order.tradingsymbol }}</td>
+            </tr>
+            <tr>
+                <th>Order Status</th>
+                <td>{{ order.orderstatus }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ order.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ order.price }}</td>
+            </tr>
+            <!-- Add other necessary fields -->
+        </table>
+    {% else %}
+        <p>No details available for this order.</p>
+    {% endif %}
+</body>
+</html>
+
+{% endblock %}

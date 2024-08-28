@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <title>BoomAlgo</title>
+    <style>
+      /* Base styles */
+      body {
+        background-color: #27ae60; /* Green background */
+        color: #ffffff; /* White text */
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      
+      /* Navbar styles */
+      .bg-dark {
+        background-color: #27ae60 !important;
+        box-shadow: 0 0 15px #27ae60; /* Green shadow */
+      }
+      .navbar-dark .navbar-brand,
+      .navbar-dark .navbar-text,
+      .navbar-dark .navbar-nav .nav-link {
+        color: #ffd700; /* Golden color for navbar text */
+      }
+      .navbar-dark .navbar-brand:hover,
+      .navbar-dark .navbar-text:hover,
+      .navbar-dark .navbar-nav .nav-link:hover {
+        color: #ffcc00; /* Slightly lighter golden on hover */
+      }
+      
+      /* Button styles */
+      .btn-primary {
+        background-color: #27ae60;
+        border-color: #ffffff; /* White border */
+        color: #ffffff; /* White text */
+      }
+      .btn-primary:hover {
+        background-color: #27ae60; /* Green on hover */
+        border-color: #ffffff;
+      }
+      
+      /* Container styles */
+      .container {
+        margin-top: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      /* Card styles */
+      .card {
+        background: linear-gradient(to right, #141E30, #243B55);
+        border: 1px solid #ffd700;
+        border-radius: 10px;
+        color: #ffd700;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 20px;
+      }
+      .card-header {
+        background: linear-gradient(to right, #141E30, #243B55);
+        border-bottom: 1px solid #ffd700;
+        font-size: 1.25rem;
+        text-align: center;
+      }
+      .card-body {
+        padding: 20px;
+        text-align: center;
+      }
+      
+      /* Form control styles */
+      .form-control {
+        background-color: #333;
+        border: 1px solid #ffd700;
+        color: #ffd700;
+        margin-bottom: 15px;
+      }
+      .form-control:focus {
+        background-color: #444;
+        border-color: #ffcc00;
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+      }
+      
+      /* Footer styles */
+      footer {
+        background-color: transparent;
+        color: #ffffff;
+        padding: 20px 0;
+        text-align: center;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 15px;
+        }
+        .card {
+          width: 100%;
+        }
+        .card-header,
+        .card-body {
+          font-size: 1rem;
+          padding: 15px;
+        }
+        .navbar-dark .navbar-nav .nav-link {
+          padding: 10px 15px;
+        }
+      }
+      
+      @media (max-width: 576px) {
+        .navbar-brand {
+          font-size: 1rem;
+        }
+        .navbar-nav {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      {% block content %}
+      <!-- Main content will be injected here -->
+      {% endblock content %}
+    </div>
+    
+    <footer>
+      <p>&copy; 2020 BoomAlgo. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+{% extends 'client_base.html' %}
+{% block main %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <style>
+        /* styles.css */
+        body {
+            background-color: #000000;
+            font-family: Arial, sans-serif;
+         
+            margin-bottom: 120px;
+        }
+        .container {
+    margin: 20px auto;
+    width: 90%;
+    background: #020202;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+  
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #d4aa1e;
+        }
+
+        .order-table {
+            
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 60px;
+        }
+
+        .order-table th, .order-table td {
+            padding: 12px;
+            border: 1px solid #000000;
+            text-align: left;
+        }
+
+        .order-table th {
+            background-color: #000000;
+            color: rgb(255, 255, 255);
+        }
+
+        .order-table tr:nth-child(even) {
+            background-color: #000000;
+        }
+
+        .order-table tr:hover {
+            background-color: #000000;
+        }
+
+        .order-table td a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .order-table td a:hover {
+            text-decoration: underline;
+        }
+
+        .cancel-icon {
+            color: #FF0000;
+            cursor: pointer;
+        }
+
+        .cancel-icon:hover {
+            color: #CC0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order List</h1>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Time</th>
+                    <th>Order ID</th>
+                    <th>Symbol</th>
+                    <th>Trading Symbol</th>
+                    <th>Symbol Token</th>
+                    <th>Transaction Type</th>
+                    <th>Order Type</th>
+                    <th>Quantity</th>
+                    <th>Segment Type</th>
+                    <!-- <th>Squareoff</th>
+                    <th>Stoploss</th> -->
+                    <th>Price</th>
+                    
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ forloop.counter}}</td>
+                    <td>{{ order.timestamp }}</td>
+                    <td>
+                        <a href="{% url 'get_order_status' order.order_id %}">{{ order.order_id }}</a>
+                    </td>
+                    <td>{{ order.symbol }}</td>
+                    <td>{{ order.tradingsymbol }}</td>
+                    <td>{{ order.symboltoken }}</td>
+                    <td>{{ order.transaction_type }}</td>
+                    <td>{{ order.order_type }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.segment_type }}</td>
+                    <!-- <td>{{ order.squareoff }}</td>
+                    <td>{{ order.stoploss }}</td> -->
+                    <td>{{ order.price }}</td>
+                    
+                    <td><i class="cancel-icon" onclick="cancelOrder('{{ order.order_id }}')">Cancel</i></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function cancelOrder(orderId) {
+            const csrftoken = getCookie('csrftoken');
+            $.ajax({
+                url: '/cancel_order/',  // URL to your cancel_order view
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken  // Set CSRF token in headers
+                },
+                data: { order_id: orderId },
+                success: function(response) {
+                    alert('Order cancelled successfully!');
+                    // Optionally, you can update the UI here if needed
+                },
+                error: function(xhr, status, error) {
+                    alert('Failed to cancel order. Please try again later.');
+                    console.error(error);
+                }
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
+
+{% endblock %}

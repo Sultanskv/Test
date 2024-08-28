@@ -1,0 +1,64 @@
+{% extends 'client_base.html' %}
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade History</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trade History</h1>
+    {% for clint_id, data in trade_data.items %}
+        <h2>Client ID: {{ clint_id }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Signal</th>
+                    <th>Signal Time</th>
+                    <th>Symbol</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Entry Price</th>
+                    <th>Exit Price</th>
+                    <th>P & L</th>
+                    <th>Cumulative P & L</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trade in data.trades %}
+                    <tr>
+                        <td>{{ trade.signal }}</td>
+                        <td>{{ trade.signal_time }}</td>
+                        <td>{{ trade.symbol }}</td>
+                        <td>{{ trade.type }}</td>
+                        <td>{{ trade.quantity }}</td>
+                        <td>{{ trade.entry_price }}</td>
+                        <td>{{ trade.exit_price }}</td>
+                        <td>{{ trade.pnl }}</td>
+                        <td>{{ trade.cumulative_pnl }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</body>
+</html>
+
+{% endblock %}

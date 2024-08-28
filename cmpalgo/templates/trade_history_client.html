@@ -1,0 +1,223 @@
+{% extends 'client_base.html' %}
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trade History</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa; /* Light background for better contrast */
+            color: #2c3e50; /* Dark text color */
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 1400px;
+            background-color: #ffffff; /* White card background */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            animation: fadeIn 1.5s ease-in-out; /* Fade-in effect */
+        }
+
+        h1, h3 {
+            color: #34495e; /* Darker color for headings */
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        h1::before, h1::after, h3::before, h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background-color: #34495e;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        h1::before, h3::before {
+            left: -60px;
+        }
+
+        h1::after, h3::after {
+            right: -60px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-top: 20px;
+            color: #2c3e50; /* Dark text color */
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Subtle gradient */
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+            border: none; /* Remove default borders */
+            padding: 15px; /* Increased padding for better readability */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+
+        .thead-dark th {
+            background-color: #34495e; /* Darker background for table headers */
+            color: #ffffff; /* White text for headers */
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ffffff; /* White border for headers */
+            text-transform: uppercase;
+        }
+
+        .table-striped tbody tr {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Soft gradient for rows */
+            transition: background 0.3s ease;
+        }
+
+        .table-striped tbody tr:hover {
+            background-color: #c3cfe2; /* Light blue on hover */
+            color: #2c3e50; /* Dark text on hover */
+        }
+
+        .table-bordered {
+            border: 1px solid #34495e; /* Dark border */
+            border-radius: 10px;
+            overflow: hidden; /* Ensure the border radius is applied */
+        }
+
+        .text-success {
+            color: #28a745 !important; /* Green text for positive P&L */
+        }
+
+        .text-danger {
+            color: #dc3545 !important; /* Red text for negative P&L */
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out; /* Smooth fade-in effect */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .white-text {
+            color: #2c3e50 !important; /* Dark text color */
+        }
+
+        a {
+            color: #34495e; /* Dark link color */
+            text-decoration: none;
+            background-color: transparent;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #5d68a7; /* Slightly brighter color on hover */
+        }
+
+        .ticker-container {
+            margin-top: 30px;
+            background-color: #ffffff; /* White background for the ticker */
+            padding: 15px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(10, 10, 10, 0.2); /* Subtle shadow */
+            animation: fadeIn 2s ease-in-out; /* Fade-in effect for the ticker */
+        }
+
+        .ticker-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite; /* Smooth scrolling animation */
+            color: #2c3e50; /* Dark text color */
+            font-size: 16px;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(10%); /* Start off-screen on the right */
+            }
+            100% {
+                transform: translateX(-100%); /* Move fully to the left */
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1, h3 {
+                font-size: 24px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .table th, .table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container fade-in">
+    <h1 class="glow">Trade History</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Signal</th>
+                    <th>Signal Time</th>
+                    <th>Symbol</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Entry Price</th>
+                    <th>Exit Price</th>
+                    <th>P & L</th>
+                    <th>Cumulative P & L</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for trade in trade_history %}
+                <tr>
+                    <td class="white-text">{{ trade.signal }}</td>
+                    <td class="white-text">{{ trade.signal_time }}</td>
+                    <td class="white-text">{{ trade.symbol }}</td>
+                    <td class="white-text">{{ trade.type }}</td>
+                    <td class="white-text">{{ trade.quantity }}</td>
+                    <td class="white-text">{{ trade.entry_price }}</td>
+                    <td class="white-text">{{ trade.exit_price }}</td>
+                    <td class="{% if trade.pnl >= 0 %}text-success{% else %}text-danger{% endif %}">{{ trade.pnl }}</td>
+                    <td class="{% if trade.cumulative_pnl >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        {% if trade.type == 'Long_Entry' or trade.type == 'Short_Entry' %}-{% else %}{{ trade.cumulative_pnl }}{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3 class="glow">Total Cumulative P&L: <span class="{% if cumulative_pnl >= 0 %}text-success{% else %}text-danger{% endif %}">{{ cumulative_pnl }}</span></h3>
+</div>
+<div class="ticker-container">
+    <div class="ticker-text">
+        THIS RESULTS IS VALID FOR TODAY ONLY, WE DO NOT DIRECTLY OR INDIRECTLY MAKE ANY REFERENCE TO THE PAST OR EXPECTED FUTURE RETURN/PERFORMANCE OF THE ALGORITHM /
+        सभी प्रतिभूतियां एल्गो ट्रेडिंग सिस्टम बाजार जोखिमों के अधीन हैं और इस बात का कोई आश्वासन नहीं दिया जा सकता है कि उपयोगकर्ता के उद्देश्यों को आज के प्रदर्शन के आधार पर प्राप्त किया जाएगा। यह परिणाम केवल आज के लिए मान्य है।
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

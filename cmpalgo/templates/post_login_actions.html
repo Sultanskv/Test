@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Complete the following actions to continue:</h2>
+    
+    {% if reset_password %}
+    <div class="card">
+        <div class="card-body">
+            <h3>Reset Password</h3>
+            <form id="resetPasswordForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="new_password">New Password</label>
+                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if accept_terms %}
+    <div class="card mt-3">
+        <div class="card-body">
+            <h3>Terms and Conditions</h3>
+            <p style="font-size: 14px;">
+                {{ email_content|linebreaks }}
+            </p>
+            <input type="checkbox" id="acceptTerms"> I accept the terms and conditions
+            <button id="acceptTermsButton" class="btn btn-primary mt-2" disabled>Accept Terms and Conditions</button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Include the JavaScript here -->
+<script>
+    document.getElementById('acceptTerms').addEventListener('change', function() {
+        document.getElementById('acceptTermsButton').disabled = !this.checked;
+    });
+
+    document.getElementById('acceptTermsButton').addEventListener('click', function() {
+        fetch('{% url "post_login_actions" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'accept_terms': true
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '{% url "client_dashbord" %}';
+            } else {
+                alert('Failed to accept terms: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while accepting the terms and conditions.');
+        });
+    });
+</script>
+{% endblock %}

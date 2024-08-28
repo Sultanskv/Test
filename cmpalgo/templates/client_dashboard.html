@@ -1,0 +1,297 @@
+{% extends 'client_base.html' %}
+{% block main %}
+<style>
+    /* General Container Styling */
+    .dashboard-container {
+        padding: 30px;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Soft gradient background */
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        color: #2c3e50;
+        font-family: 'Poppins', sans-serif; /* Modern font */
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Header Styling */
+    .dashboard-container h3 {
+        margin-bottom: 25px;
+        color: #2c3e50;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.8rem; /* Larger font size */
+        text-transform: uppercase;
+        letter-spacing: 2px; /* Added letter spacing */
+        position: relative;
+    }
+
+    .dashboard-container h3::before, .dashboard-container h3::after {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 3px;
+        background-color: #2c3e50;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .dashboard-container h3::before {
+        left: -60px;
+    }
+
+    .dashboard-container h3::after {
+        right: -60px;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        animation: slideInUp 1s ease-in-out; /* Slide in animation */
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: center;
+        border: none;
+        transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover transition */
+    }
+
+    th {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    td {
+        background-color: #ffffff;
+        color: #34495e;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    td:hover {
+        background-color: #f7f7f7;
+        transform: translateY(-3px); /* Lift effect on hover */
+    }
+
+    /* Input Fields Styling */
+    .form-control, .custom-select {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        color: #34495e;
+        background-color: #ffffff;
+        border: 1px solid #dcdcdc;
+        border-radius: 30px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus, .custom-select:focus {
+        border-color: #5d68a7;
+        box-shadow: 0 0 10px rgba(93, 104, 167, 0.2); /* Soft focus shadow */
+        outline: none;
+    }
+
+    /* Button Styling */
+    .btn-success {
+        color: #ffffff;
+        background-color: #34495e;
+        border-color: #2c3e50;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #5d68a7;
+        box-shadow: 0 6px 12px rgba(93, 104, 167, 0.3); /* Elevated shadow */
+        transform: translateY(-3px); /* Lift effect on hover */
+    }
+
+    /* Switch Styling */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 24px;
+        margin-top: 8px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cccccc;
+        transition: background-color 0.3s ease;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: #ffffff;
+        transition: transform 0.3s ease;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #5d68a7;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(16px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <h3 class="text-center glow">Dashboard</h3>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Quantity</th>
+                    <th>Strategy</th>
+                    <th>Order Type</th>
+                    <th>Product Type</th>
+                    <th>Trading</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for symbol in symbols %}
+                    {% for s in signals %}
+                        {% if s.SYMBOL|lower == symbol|lower %}
+                            <tr>
+                                <td>{{symbol}}</td>
+                                <td>
+                                    <input type="hidden" name="symbol_{{forloop.counter}}" value="{{s.SYMBOL}}">
+                                    <input type="number" class="form-control" id="quantity_{{forloop.counter}}" name="quantity_{{forloop.counter}}" value="{{s.QUANTITY}}">
+                                </td>
+                                <td>
+                                    <select class="form-control custom-select" id="strategy_{{forloop.counter}}" name="strategy_{{forloop.counter}}">
+                                        <option value="{{s.Strategy}}" selected>{{s.Strategy}}</option>
+                                        <option value="STR1">STR1</option>
+                                        <option value="STR2">STR2</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control custom-select" id="order_type_{{forloop.counter}}" name="order_type_{{forloop.counter}}">
+                                        <option value="{{s.Order_Type}}" selected>{{s.Order_Type}}</option>
+                                        <option value="MARKET">MARKET</option>
+                                        <option value="LIMIT">LIMIT</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control custom-select" id="product_type_{{forloop.counter}}" name="product_type_{{forloop.counter}}">
+                                        <option value="{{s.Product_Type}}" selected>{{s.Product_Type}}</option>
+                                        <option value="MIS">MIS</option>
+                                        <option value="CNC">CNC</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="trading_{{forloop.counter}}" {% if s.trade == 'on' %} checked {% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                {% for symbol in symbols_to_exclude %}
+                    <tr>
+                        <td>{{symbol}}</td>
+                        <td>
+                            <input type="hidden" name="symbol" value="">
+                            <input type="number" class="form-control" id="quantity" name="quantity_{{forloop.counter}}" value="">
+                        </td>
+                        <td>
+                            <select class="form-control custom-select" id="strategy" name="strategy">
+                                <option value="STR1">STR1</option>
+                                <option value="STR2">STR2</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control custom-select" id="order_type" name="order_type">
+                                <option value="MARKET">MARKET</option>
+                                <option value="LIMIT">LIMIT</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control custom-select" id="product_type" name="product_type">
+                                <option value="{{strategies}}">{{ strategies }}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" name="trading">
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center mt-4">
+            <button class="btn btn-success" type="submit">Update</button>
+        </div>
+    </form>
+</div>
+
+{% if msg %}
+<script>
+    alert('{{ msg|escapejs }}');
+</script>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Background styles */
+    .background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  /* Particle styles */
+  .particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: float 15s infinite ease-in-out;
+  }
+  .small { width: 15px; height: 15px; bottom: 10%; left: 20%; animation-duration: 12s; }
+  .medium { width: 25px; height: 25px; top: 20%; left: 40%; animation-duration: 10s; }
+  .large { width: 35px; height: 35px; top: 50%; right: 20%; animation-duration: 18s; }
+
+  @keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* Background content styles */
+  .background-content {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 3s ease-in;
+  }
+  .background-content h3 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  .background-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    max-width: 400px;
+  }
+  .background-content a {
+    color: #ffdd57;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  .background-content a:hover {
+    color: #fff;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Login container styles */
+  .login-container {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    animation: slideIn 2s ease-out;
+  }
+  .login-container img {
+    display: block;
+    margin: 0 auto 20px;
+    width: 80px;
+  }
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+  }
+  .login-container .form-control {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  .login-container .btn-primary {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    border: none;
+    border-radius: 4px;
+    transition: background 0.3s;
+  }
+  .login-container .btn-primary:hover {
+    background: #0056b3;
+  }
+  .login-container .signup-link {
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  @keyframes slideIn {
+    from { right: -300px; opacity: 0; }
+    to { right: 10%; opacity: 1; }
+  }
+  body {
+    background-color: #27ae60;
+    color: #ffffff;
+  }
+  .modal-content {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    outline: 0;
+}
+  
+</style>
+
+<div class="background"></div>
+<div class="particle small"></div>
+<div class="particle medium"></div>
+<div class="particle large"></div>
+<div class="background-content">
+  <h3>Welcome to SecureTrade</h3>
+  <p>Experience the next generation of secure, fast, and reliable trading. Our platform provides you with the best tools to stay ahead in the market.</p>
+  <a href="#">Learn More</a>
+</div>
+
+<div class="login-container">
+  <img src="{% static 'your-logo-path/logo.png' %}" alt="Logo">
+  <h2>Login to Your Account</h2>
+
+  {% if msg %}
+  <div class="alert">{{ msg }}</div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+    <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+
+  <div>
+    <a href="#" data-toggle="modal" data-target="#resetPasswordModal">Forgot Password?</a>
+  </div>
+  
+  <div class="signup-link">
+    <a href="{% url 'signup' %}">Don't have an account? Sign Up</a>
+  </div>
+</div>
+
+{% if error == "no" %}
+<script>
+  alert('Logged In Successfully');
+  window.location = ('{% url 'client_dashboard' %}');
+</script>
+{% endif %}
+{% if error == "yes" %}
+<script>
+  alert('Invalid Login Credentials, Try Again...');
+</script>
+{% endif %}
+
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="resetPasswordForm">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="new_password">New Password</label>
+            <input type="password" class="form-control" id="new_password" name="new_password" required>
+          </div>
+          <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Accept Terms Modal -->
+<div class="modal fade" id="acceptTermsModal" tabindex="-1" role="dialog" aria-labelledby="acceptTermsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="acceptTermsModalLabel">Terms and Conditions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px;">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent non vehicula purus.
+        </p>
+        <input type="checkbox" id="acceptTerms"> I accept the terms and conditions
+        <button id="acceptTermsButton" class="btn btn-primary mt-2" disabled>Accept Terms and Conditions</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.getElementById('acceptTerms').addEventListener('change', function() {
+        document.getElementById('acceptTermsButton').disabled = !this.checked;
+    });
+
+    document.getElementById('acceptTermsButton').addEventListener('click', function() {
+        fetch('{% url "accept_terms" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'accept_terms': true
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Terms and conditions accepted.');
+                window.location.reload();
+            } else {
+                alert('Failed to accept terms: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while accepting the terms and conditions.');
+        });
+    });
+
+    document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var newPassword = document.getElementById('new_password').value;
+        var confirmPassword = document.getElementById('confirm_password').value;
+
+        if (newPassword !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        fetch('{% url "reset_password" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'new_password': newPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Password reset successfully.');
+                window.location.reload();
+            } else {
+                alert('Failed to reset password: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while resetting the password.');
+        });
+    });
+</script>
+
+{% endblock %}

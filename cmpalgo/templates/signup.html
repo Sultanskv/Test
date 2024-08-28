@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  /* General Reset */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #89f7fe, #66a6ff); /* Gradient background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    color: #333;
+    position: relative;
+  }
+
+  /* Background Animation */
+  @keyframes backgroundMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  body {
+    background-size: 300% 300%;
+    animation: backgroundMove 15s ease infinite;
+  }
+
+  /* Background Overlay */
+  .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Dark semi-transparent overlay */
+    z-index: -1;
+  }
+
+  /* Particle Animation */
+  .particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: float 15s infinite ease-in-out;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-30px) translateX(30px); }
+    100% { transform: translateY(0) translateX(0); }
+  }
+
+  .particle.small {
+    width: 60px;
+    height: 60px;
+    top: 10%;
+    left: 15%;
+    animation-duration: 20s;
+  }
+
+  .particle.medium {
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    left: 75%;
+    animation-duration: 25s;
+  }
+
+  .particle.large {
+    width: 150px;
+    height: 150px;
+    top: 80%;
+    left: 30%;
+    animation-duration: 30s;
+  }
+
+  /* Signup/Login Container */
+  .form-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1.5s ease-in-out;
+  }
+
+  /* Fade-in Animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Heading */
+  .form-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 1.5px;
+    animation: textSlideIn 1s ease-in-out;
+    text-transform: uppercase;
+  }
+
+  /* Text Slide-in Animation */
+  @keyframes textSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Input Fields */
+  .form-control {
+    background: rgba(255, 255, 255, 0.3); /* Semi-transparent input background */
+    border: 2px solid #fff;
+    border-radius: 25px;
+    color: #fff;
+    padding: 12px 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-control::placeholder {
+    color: #ddd;
+  }
+
+  .form-control:focus {
+    border-color: #00c6ff; /* Light blue border on focus */
+    outline: none;
+    background: rgba(0, 198, 255, 0.1);
+  }
+
+  /* Submit Button */
+  .btn-primary {
+    background: #00c6ff; /* Light blue background */
+    border: none;
+    padding: 12px;
+    border-radius: 25px;
+    width: 100%;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background: #0072ff; /* Darker blue */
+    transform: translateY(-3px);
+  }
+
+  /* Links */
+  .form-container a {
+    color: #00c6ff;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: block;
+    margin-top: 15px;
+    transition: color 0.3s ease;
+  }
+
+  .form-container a:hover {
+    color: #0072ff;
+  }
+
+  .form-container .link-option {
+    margin-top: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  /* Content Area */
+  .content-area {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    width: 25%;
+    color: #fff;
+    z-index: 1;
+    animation: slideInLeft 1.5s ease-in-out;
+  }
+
+  .content-area h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .content-area p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+
+  .content-area a {
+    display: inline-block;
+    color: #1f4037;
+    background: #99f2c8;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .content-area a:hover {
+    background: #1f4037;
+    color: #fff;
+    transform: translateY(-3px);
+  }
+
+  /* Content Area Animation */
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Alert Messages */
+  .alert {
+    color: #D32F2F;
+    margin-bottom: 20px;
+    font-weight: bold;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .form-container {
+      width: 85%;
+      padding: 30px;
+    }
+
+    .content-area {
+      display: none; /* Hide the content area on smaller screens */
+    }
+
+    .form-control {
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 20px;
+    }
+
+    .form-container h2 {
+      font-size: 1.5rem;
+    }
+
+    .form-control {
+      font-size: 0.85rem;
+    }
+
+    .btn-primary {
+      padding: 10px;
+    }
+  }
+</style>
+
+<!-- Background Overlay -->
+<div class="background-overlay"></div>
+
+<!-- Floating Particles -->
+<div class="particle small"></div>
+<div class="particle medium"></div>
+<div class="particle large"></div>
+
+<!-- Content Area -->
+<div class="content-area">
+  <h3>Welcome to SecureTrade</h3>
+  <p>Experience the next generation of secure, fast, and reliable trading. Our platform provides you with the best tools to stay ahead in the market.</p>
+  <a href="#">Learn More</a>
+</div>
+
+<div class="form-container">
+  <h2>Sign Up for a Free Account</h2>
+
+  {% if msg %}
+  <div class="alert">{{ msg }}</div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="text" name="clint_name_first" class="form-control" placeholder="Enter your first name" required>
+    <input type="text" name="clint_name_last" class="form-control" placeholder="Enter your last name" required>
+    <input type="email" name="clint_email" class="form-control" placeholder="Enter your email" required>
+    <input type="text" name="clint_phone_number" class="form-control" placeholder="Enter your phone number" required>
+    <input type="password" name="clint_password" class="form-control" placeholder="Enter your password" required>
+    <button type="submit" class="btn btn-primary">Sign Up</button>
+  </form>
+
+  <div class="link-option">
+    <a href="{% url 'client_login' %}">Already have an account? Login</a>
+  </div>
+</div>
+
+{% if success %}
+<script>
+  alert('Registered Successfully. You have a 2-day trial account.');
+  setTimeout(function(){
+    window.location.href = "{% url 'client_login' %}";
+  }, 2000);  // Redirects after 2 seconds
+</script>
+{% endif %}
+{% if error %}
+<script>
+  alert('Registration failed, please try again.');
+</script>
+{% endif %}
+
+{% endblock %}

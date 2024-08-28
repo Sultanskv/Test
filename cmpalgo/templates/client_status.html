@@ -1,0 +1,189 @@
+{% extends 'client_base.html' %}
+
+{% block main %}
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #ffffff; /* Dark background for better contrast */
+        margin: 0;
+        padding: 0;
+        color: #34495E;
+    }
+
+    .container {
+        margin: 20px auto;
+        width: 90%;
+        background: #ffffff; /* Darker background for the container */
+        padding: 20px;
+        border-radius: 15px;
+
+        overflow-x: auto;
+    }
+
+    header {
+        background-color: #ffffff; /* Golden header background */
+        padding: 15px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        color: #353b49; /* Black text for better readability */
+        font-weight: 700;
+        letter-spacing: 1.5px;
+    }
+
+    .search-bar {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .search-bar input {
+        width: 99%;
+        padding: 10px;
+        border-radius: 25px;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        background-color: #ffffff; /* Dark input background */
+        color: #fff;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    thead {
+        background-color: #3c4152; /* Golden color for header */
+        color: #34495E; /* Black text for the header */
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    tr:nth-child(even) {
+        background-color: #353535; /* Darker row background */
+    }
+
+    tr:nth-child(odd) {
+        background-color: #ffffff; /* Slightly lighter row background */
+    }
+
+    tr:hover {
+        background-color: #ffffff; /* Golden background on hover */
+        color: #34495E; /* Black text on hover */
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        color: #34495E; /* Golden color for pagination text */
+    }
+
+    .pagination select, .pagination button {
+        padding: 8px 12px;
+        margin: 0 5px;
+        background-color: #ffffff; /* Darker buttons */
+        color: #34495E;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .pagination select {
+        background-color: #ffffff; /* Golden dropdown */
+        color: #34495E;
+    }
+
+    .pagination button:hover {
+        background-color: #ffffff; /* Golden hover effect for buttons */
+        color: #34495E;
+    }
+
+    .pagination span {
+        font-weight: bold;
+    }
+
+</style>
+
+<div class="container">
+    <header>
+        <h1>Trading Status</h1>
+    </header>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Service Name</th>
+                <th>Quantity</th>
+                <th>Strategy</th>
+                <th>Trading</th>
+                <th>IP Address</th>
+                <th>UPDATED BY</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in client %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{c.clint_name_first}}</td>
+                <td>{{c.login_date_time}}</td>
+                <td>{{c.service_name}}</td>
+                <td>{{client_symbol_qty.QUANTITY}}</td>
+                <td>{{c.strategies}}</td>
+                {% if c.clint_plane == 'Live' %}
+                    <td style="color: #34a711;">Panel ON</td> <!-- Golden color for live status -->
+                {% else %}
+                    <td style="color:red;">Panel OFF</td>
+                {% endif %}
+                <td>{{c.ip_address}}</td>
+                <td>{{ c.updated_by }}</td>
+            </tr>
+            {% endfor %}
+
+            {% for c in st %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{c.name}}</td>
+                <td>{{c.time}}</td>
+                <td>{{c.service_name}}</td>
+                <td>{{c.quantity}}</td>
+                <td>{{c.strategy}}</td>
+                {% if c.trading == 'Live' %}
+                    <td style="color: #34a711;">Panel ON</td> <!-- Golden color for live status -->
+                {% else %}
+                    <td style="color:red;">Panel OFF</td>
+                {% endif %}
+                <td>{{c.ip_address}}</td>
+                <td>{{ c.updated_by }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span>Rows per page: </span>
+        <select>
+            <option>10</option>
+            <option>20</option>
+            <option>30</option>
+        </select>
+        <span>1-1 of 1</span>
+        <button>&lt;</button>
+        <button>&gt;</button>
+    </div>
+</div>
+{% endblock %}

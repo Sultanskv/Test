@@ -1,0 +1,213 @@
+{% extends 'client_base.html' %}
+{% block main %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status</title>
+    <style>
+        body {
+            background-color: #f5f7fa; /* Light background for better contrast */
+            font-family: 'Poppins', sans-serif;
+            color: #2c3e50; /* Dark text color */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1200px;
+            background: #ffffff; /* White card background */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            animation: fadeIn 1.5s ease-in-out; /* Smooth fade-in effect */
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #34495e;
+            color: #ffffff;
+            font-size: 28px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            padding: 20px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        h1::before, h1::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background-color: #ffffff;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        h1::before {
+            left: -70px;
+        }
+
+        h1::after {
+            right: -70px;
+        }
+
+        .order-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .order-details th,
+        .order-details td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            word-wrap: break-word;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .order-details th {
+            background-color: #34495e;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 5px;
+        }
+
+        .order-details tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .order-details tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .order-details tr:hover {
+            background-color: #c3cfe2;
+            color: #2c3e50;
+        }
+
+        .no-order {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 18px;
+            margin-top: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+                padding: 15px;
+            }
+
+            .order-details th,
+            .order-details td {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+                padding: 10px;
+            }
+
+            .order-details th,
+            .order-details td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .order-details {
+                font-size: 14px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Order Status</h1>
+        {% if order_status %}
+        <table class="order-details">
+            <tr>
+                <th>Order ID</th>
+                <td>{{ order_status.orderid }}</td>
+            </tr>
+            <tr>
+                <th>Time</th>
+                <td>{{ order_status.timestamp }}</td>
+            </tr>
+            <tr>
+                <th>Symbol</th>
+                <td>{{ order_status.symbol }}</td>
+            </tr>
+            <tr>
+                <th>Trading Symbol</th>
+                <td>{{ order_status.tradingsymbol }}</td>
+            </tr>
+            <tr>
+                <th>Symbol Token</th>
+                <td>{{ order_status.symboltoken }}</td>
+            </tr>
+            <tr>
+                <th>Transaction Type</th>
+                <td>{{ order_status.transaction_type }}</td>
+            </tr>
+            <tr>
+                <th>Order Type</th>
+                <td>{{ order_status.order_type }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ order_status.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Segment Type</th>
+                <td>{{ order_status.segment_type }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ order_status.price }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ order_status.status }}</td>
+            </tr>
+            <tr>
+                <th>Update Time</th>
+                <td>{{ order_status.updatetime }}</td>
+            </tr>
+        </table>
+        {% else %}
+        <p class="no-order">No order details available.</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>
+{% endblock %}

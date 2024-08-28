@@ -1,0 +1,129 @@
+{% extends 'client_base.html' %}
+
+{% block main %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f5f7fa; /* Light background for better contrast */
+        color: #2c3e50; /* Dark text color */
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    h2 {
+        color: #34495E;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+        letter-spacing: 1.5px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 40px;
+        border-radius: 15px;
+        background-color: #ffffff;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        animation: fadeIn 1.5s ease-in-out; /* Smooth fade-in effect */
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[type="text"], select, textarea {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #dcdcdc;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        color: #34495E;
+        font-size: 16px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="text"]:focus, select:focus, textarea:focus {
+        border-color: #34495E;
+        outline: none;
+        box-shadow: 0 0 10px rgba(52, 73, 94, 0.1); /* Soft focus shadow */
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    button[type="submit"] {
+        background-color: #34495E;
+        color: #ffffff;
+        border: none;
+        border-radius: 50px;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 6px 15px rgba(52, 73, 94, 0.3); /* Elevated shadow */
+    }
+
+    button[type="submit"]:hover {
+        background-color: #5d68a7;
+        transform: translateY(-3px); /* Lift effect on hover */
+        box-shadow: 0 8px 20px rgba(93, 104, 167, 0.5); /* Stronger shadow on hover */
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            width: 90%;
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        button[type="submit"] {
+            padding: 12px 25px;
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            width: 100%;
+            padding: 15px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<div class="container">
+    <h2>Complaint Here</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send Message</button>
+    </form>
+</div>
+
+{% endblock %}

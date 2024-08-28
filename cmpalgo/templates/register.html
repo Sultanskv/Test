@@ -1,0 +1,357 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+
+<style>
+  body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7f6;
+      padding: 20px;
+  }
+  .card-shadow {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: 0 auto;
+  }
+  .card-body h5 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+  }
+  .form-group {
+      margin-bottom: 20px;
+  }
+  label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+  }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="datetime-local"], input[type="password"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+  }
+  input[type="submit"] {
+      background-color: #007bff;
+      color: white;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+      transition: background-color 0.3s;
+  }
+  input[type="submit"]:hover {
+      background-color: #0056b3;
+  }
+  .alert {
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 20px;
+      color: white;
+      border-radius: 5px;
+  }
+  .alert-danger {
+      background-color: #f44336;
+  }
+  .hidden {
+      display: none;
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Handle broker selection to show/hide specific fields
+        $('#options').change(function() {
+            var selectedBroker = $(this).val();
+            $('.broker-input').hide();  // Hide all broker-specific inputs
+            
+            if (selectedBroker === 'Angel One') {
+                $('#angel-input').show();  // Show Angel One specific inputs
+            } else if (selectedBroker === 'Alice Blue') {
+                $('#alice-blue-input').show();  // Show Alice Blue specific inputs
+            } else if (selectedBroker === 'Upstox') {
+                $('#upstox-input').show();  // Show Upstox specific inputs
+            }else if (selectedBroker === '5paisa') {
+                $('#5paisa-input').show();  // Show 5paisa specific inputs
+            }
+        });
+
+        // Fetch and display symbols based on selected group
+        $('#group').change(function() {
+            var groupId = $(this).val();
+            if (groupId) {
+                $.ajax({
+                    url: '/get-symbols/' + groupId + '/',
+                    method: 'GET',
+                    success: function(data) {
+                        var symbolContainer = $('#symbol-container');
+                        symbolContainer.empty(); // Clear current symbols
+                        $.each(data.symbols, function(index, symbol) {
+                            symbolContainer.append('<div class="grid-item">' + symbol.name + '</div>');
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching symbols:', error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<div class="card-body">
+    <h5 class="p-2" style="border-bottom : 2px solid orange">Create an Account</h5>
+    {% if msg %}
+    <h4 style="color: red;text-align:center;">{{ msg }}</h4>
+    {% endif %}
+
+    <div class="container-fluid">
+        <form method="post" name="signup">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="fname" class="form-control" required placeholder="Enter firstname">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="lname" class="form-control" required placeholder="Enter last name">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="Phone" name="mobile" class="form-control" required placeholder="Enter mobile no">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Email ID</label>
+                        <input type="email" name="email" class="form-control" required placeholder="Enter email">
+                    </div>
+                </div>
+
+                <div class="col-sm md lg xl xxl-6">
+                    <div class="form-group">
+                        <label for="fromdate">From Date:</label>
+                        <input type="datetime-local" id="fromdate" name="fromdate" required class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="todate">To Date:</label>
+                        <input type="datetime-local" id="todate" name="todate" required class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" id="pwd" name="pwd" required class="form-control" placeholder="Enter password">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cpwd">Confirm Password:</label>
+                        <input type="password" id="cpwd" name="cpwd" required class="form-control" placeholder="Enter password again">
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="options">Select a Broker:</label>
+                        <select id="options" name="Broker" class="form-control">
+                            <option>Select Broker</option>
+                            {% for b in brokers %}
+                            <option value="{{ b.broker_name }}">
+                                {{ b.broker_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+    
+                <!-- Angel One Specific Fields -->
+                <div class="col-md-6 broker-input" id="angel-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="angel-api-key">API Key</label>
+                        <input type="text" class="form-control" name="api_key" id="angel-api-key" placeholder="Enter API Key">
+                    </div>
+                </div>
+    
+                <!-- Alice Blue Specific Fields -->
+                <div class="col-md-6 broker-input" id="alice-blue-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="alice-secret_key">Secret Key/APP KEY</label>
+                        <input type="text" class="form-control" name="secret_key" id="alice-secret_key" placeholder="Enter Secret Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="alice-app_id">APP ID/USER ID</label>
+                        <input type="text" class="form-control" name="app_id" id="alice-app_id" placeholder="Enter App ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="alice-demate_user_id">DEMATE USER ID</label>
+                        <input type="text" class="form-control" name="user_id" id="alice-demate_user_id" placeholder="Enter Demate User ID">
+                    </div>
+                </div>
+    
+                <!-- Upstox Specific Fields -->
+                <div class="col-md-6 broker-input" id="upstox-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="upstox-api-key">API Key</label>
+                        <input type="text" class="form-control" name="api_key" id="upstox-api-key" placeholder="Enter API Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="upstox-secret_key">Secret Key</label>
+                        <input type="text" class="form-control" name="secret_key" id="upstox-secret_key" placeholder="Enter Secret Key">
+                    </div>
+                </div>
+    
+
+                <!-- 5paisa Specific Fields -->
+                <div class="col-md-6 broker-input" id="5paisa-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="5paisa-key">Key</label>
+                        <input type="text" class="form-control" name="api_key" id="5paisa-key" placeholder="Enter API Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="5paisa-userid">UserID</label>
+                        <input type="text" class="form-control" name="user_id" id="5paisa-userid" placeholder="Enter UserID">
+                    </div>
+                    <div class="form-group">
+                        <label for="5paisa-encryption_key">ENCRYPTION_KEY</label>
+                        <input type="text" class="form-control" name="secret_key" id="5paisa-encryption_key" placeholder="Enter Encryption Key">
+                    </div>
+                </div>
+                
+                {% comment %} <!-- Zerodha Specific Fields -->
+                <div class="col-md-6 broker-input" id="zerodha-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="zerodha-key">API Key</label>
+                        <input type="text" class="form-control" name="api_key" id="zerodha-key" placeholder="Enter API Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="zerodha-api_secret_key">API Secret Key</label>
+                        <input type="text" class="form-control" name="secret_key" id="zerodha-api_secret_key" placeholder="Enter API Secret Key">
+                    </div>
+                </div>
+
+                   <!-- Zebull Specific Fields -->
+                   <div class="col-md-6 broker-input" id="zebull-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="zebull-user_id">User Id</label>
+                        <input type="text" class="form-control" name="user_id" id="zebull-user_id" placeholder="Enter UserID">
+                    </div>
+                    <div class="form-group">
+                        <label for="zebull-password">Password</label>
+                        <input type="text" class="form-control" name="password" id="zebull-password" placeholder="Enter Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="zebull-app_key">APP Key</label>
+                        <input type="text" class="form-control" name="api_key" id="zebull-app_key" placeholder="Enter App Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="zebull-dob">DOB</label>
+                        <input type="text" class="form-control" name="zebull_dob" id="zebull-dob" placeholder="Enter DOB">
+                    </div>
+                </div>
+
+                   <!-- Fyers Specific Fields -->
+                   <div class="col-md-6 broker-input" id="fyers-input" style="display:none;">
+                    <div class="form-group">
+                        <label for="fyers-app_id">APP ID</label>
+                        <input type="text" class="form-control" name="app_id" id="fyers-app_id" placeholder="Enter APP ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="fyers-secret_key">Secret Key</label>
+                        <input type="text" class="form-control" name="secret_key" id="fyers-secret_key" placeholder="Enter Secret Key">
+                    </div>
+                </div> {% endcomment %}
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="type">Select an Account Type:</label>
+                        <select class="form-control" name="Account_type" id="type">
+                            <option value="Demo">Demo</option>
+                            <option value="Live">Live</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="group">Group</label>
+                        <select class="form-control" name="group" id="group" required onchange="fetchSymbols(this.value)">
+                            <option value="">Select an option</option>
+                            {% for group in groups %}
+                                <option value="{{ group.id }}">{{ group.GROUP }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="form-group" id="symbol-container">
+                            <!-- Symbols will be dynamically populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function fetchSymbols(group_id) {
+                        if (group_id) {
+                            fetch(/get-symbols/${group_id}/)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const symbolContainer = document.getElementById('symbol-container');
+                                    symbolContainer.innerHTML = ''; // Clear current symbols
+                                    data.symbols.forEach(symbol => {
+                                        const symbolDiv = document.createElement('div');
+                                        symbolDiv.className = 'grid-item';
+                                        symbolDiv.textContent = symbol.name;
+                                        symbolContainer.appendChild(symbolDiv);
+                                    });
+                                })
+                                .catch(error => console.error('Error fetching symbols:', error));
+                        }
+                    }
+                </script>
+                
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="strategy-select">Select Strategy:</label>
+                        <select id="strategy-select" name="strategies" class="form-control">
+                            <option value="">Select a Strategy</option>
+                            {% for strategy in strategies %}
+                                <option value="{{ strategy.id }}">{{ strategy.Strategy }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <input type="submit" value="Create Account">
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
